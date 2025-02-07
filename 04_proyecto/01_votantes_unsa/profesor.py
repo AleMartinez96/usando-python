@@ -1,15 +1,13 @@
+from __future__ import annotations
 from persona import Persona
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from materia import Materia
+import materia
 
 
 class Profesor(Persona):
     def __init__(self, nombre: str, apellido: str, edad: int) -> None:
         super().__init__(nombre, apellido, edad)
         self.__cargo = "sin cargo"
-        self.__materias: list["Materia"] = []
+        self.__materias: list[materia.Materia] = []
 
     @property
     def cargo(self) -> str:
@@ -19,7 +17,7 @@ class Profesor(Persona):
     def cargo(self, valor: str) -> None:
         self.__cargo = valor
 
-    def agregar_materia(self, materia: "Materia") -> None:
+    def agregar_materia(self, materia: materia.Materia) -> None:
         if not self.__materias.__contains__(materia):
             self.__materias.append(materia)
 
@@ -36,4 +34,4 @@ class Profesor(Persona):
         return False
 
     def __hash__(self) -> int:
-        return hash((super().__hash__(), self.__materias))
+        return hash((super().__hash__(), tuple(self.__materias)))

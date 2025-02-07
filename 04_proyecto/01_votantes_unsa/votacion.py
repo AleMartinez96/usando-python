@@ -1,37 +1,54 @@
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from profesor import Profesor
-    from alumno import Alumno
+from __future__ import annotations
+import persona
+import alumno
+import profesor
 
 
 class Votacion:
     def __init__(self) -> None:
         pass
 
-    def alumnos_autorizados(self, alumnos: list["Alumno"]) -> list["Alumno"]:
-        return [alumno for alumno in alumnos if alumno.puedo_votar()]
+    def alumnos_autorizados(
+        self, personas: list[persona.Persona]
+    ) -> list[alumno.Alumno]:
+        return [
+            persona
+            for persona in personas
+            if isinstance(persona, alumno.Alumno) and persona.puedo_votar()
+        ]
 
-    def profesores_autorizados(self, profesores: list["Profesor"]) -> list["Profesor"]:
-        return [profesor for profesor in profesores if profesor.puedo_votar()]
+    def profesores_autorizados(
+        self, personas: list[persona.Persona]
+    ) -> list[profesor.Profesor]:
+        return [
+            persona
+            for persona in personas
+            if isinstance(persona, profesor.Profesor) and persona.puedo_votar()
+        ]
 
-    def porcentaje_alumnos_votantes(self, alumnos: list["Alumno"]) -> float:
-        self.autorizados: int = len(self.alumnos_autorizados(alumnos))
-        self.total_alumnos: int = len(alumnos)
-        return self.autorizados / self.total_alumnos
+    def porcentaje_alumnos_votantes(self, personas: list[persona.Persona]) -> float:
+        self.autorizados: int = len(self.alumnos_autorizados(personas))
+        self.total_alumnos: int = sum(
+            1 for persona in personas if isinstance(persona, alumno.Alumno)
+        )
+        return self.autorizados / self.total_alumnos if self.total_alumnos != 0 else 0
 
-    def porcentaje_profesores_votantes(self, profesores: list["Profesor"]) -> float:
-        self.autorizados: int = len(self.profesores_autorizados(profesores))
-        self.total_profesores: int = len(profesores)
-        return self.autorizados / self.total_profesores
+    def porcentaje_profesores_votantes(self, personas: list[persona.Persona]) -> float:
+        self.autorizados: int = len(self.profesores_autorizados(personas))
+        self.total_profesores: int = sum(
+            1 for persona in personas if isinstance(persona, profesor.Profesor)
+        )
+        return (
+            self.autorizados / self.total_profesores
+            if self.total_profesores != 0
+            else 0
+        )
 
-    def votos_alumnos(self, alumnos: list["Alumno"]) -> int:
-        return len(self.alumnos_autorizados(alumnos))
+    def votos_alumnos(self, personas: list[persona.Persona]) -> int:
+        return len(self.alumnos_autorizados(personas))
 
-    def votos_profesores(self, profesores: list["Profesor"]) -> int:
-        return len(profesores) * 3
+    def votos_profesores(self, personas: list[persona.Persona]) -> int:
+        return len(self.profesores_autorizados(personas)) * 3
 
-    def votos_totales(
-        self, alumnos: list["Alumno"], profesores: list["Profesor"]
-    ) -> int:
-        return self.votos_alumnos(alumnos) + self.votos_profesores(profesores)
+    def votos_totales(self, personas: list[persona.Persona]) -> int:
+        return self.votos_alumnos(personas) + self.votos_profesores(personas)

@@ -1,16 +1,14 @@
+from __future__ import annotations
 from persona import Persona
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from materia import Materia
+import materia
 
 
 class Alumno(Persona):
     def __init__(self, nombre: str, apellido: str, edad: int) -> None:
         super().__init__(nombre, apellido, edad)
-        self.__materias: list["Materia"] = []
+        self.__materias: list[materia.Materia] = []
 
-    def agregar_materia(self, materia: "Materia") -> None:
+    def agregar_materia(self, materia: materia.Materia) -> None:
         if not self.__materias.__contains__(materia):
             self.__materias.append(materia)
 
@@ -19,10 +17,7 @@ class Alumno(Persona):
             print(materia)
 
     def puedo_votar(self) -> bool:
-        cont: int = 0
-        for materia in self.__materias:
-            if materia.ha_pasado_un_anio():
-                cont += 1
+        cont: int = sum(1 for materia in self.__materias if materia.ha_pasado_un_anio())
         return cont >= 2
 
     def __eq__(self, value: object) -> bool:
@@ -31,4 +26,4 @@ class Alumno(Persona):
         return False
 
     def __hash__(self) -> int:
-        return hash((super().__hash__(), self.__materias))
+        return hash((super().__hash__(), tuple(self.__materias)))

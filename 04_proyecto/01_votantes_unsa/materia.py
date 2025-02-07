@@ -1,13 +1,11 @@
+from __future__ import annotations
 import calendar
 from datetime import datetime
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from profesor import Profesor
+import profesor
 
 
 class Materia:
-    def __init__(self, id: int, nombre: str, responsable: "Profesor") -> None:
+    def __init__(self, id: int, nombre: str, responsable: profesor.Profesor) -> None:
         self.__id = id
         self.__nombre = nombre
         self.__responsable = responsable
@@ -30,11 +28,11 @@ class Materia:
         self.__nombre = valor
 
     @property
-    def responsable(self) -> "Profesor":
+    def responsable(self) -> profesor.Profesor:
         return self.__responsable
 
     @responsable.setter
-    def responsable(self, valor: "Profesor") -> None:
+    def responsable(self, valor: profesor.Profesor) -> None:
         self.__responsable = valor
 
     @property
